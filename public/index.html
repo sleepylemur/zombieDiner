@@ -18,6 +18,7 @@
     <div class="displaycategory">
       <p><%= name %>
       <button class="editbutton">edit</button>
+      <button class="addbutton">add</button>
       </p>
     </div>
     <div class="editcategory">
@@ -25,6 +26,24 @@
       <p><button class="updatebutton">update</button>
       <button class="revertbutton">revert</button>
       <button class="deletebutton">delete</button></p>
+    </div>
+    <ul class="disheslist">
+    </ul>
+  </script>
+
+  <script type="text/template" id="dishtemplate">
+    <div class="displaydish">
+      <img src="<%= dish.image_url %>">
+      <%= dish.name %>
+      <%= dish.price %>
+    </div>
+    <div class="editdish">
+      <p><input type="text" class="imagebox" value="<%= dish.image_url %>"></p>
+      <p><input type="text" class="namebox" value="<%= dish.name %>"></p>
+      <p><input type="text" class="pricebox" value="<%= dish.price %>"></p>
+      <p><button class="updatedishbutton">update</button>
+      <button class="revertdishbutton">revert</button>
+      <button class="deletedishbutton">delete</button></p>
     </div>
   </script>
 

@@ -1,4 +1,42 @@
 var categorytemplate = _.template($('#categorytemplate').html());
+var dishtemplate = _.template($('#dishtemplate').html());
+
+var DishView = Backbone.View.extend({
+  tagName: 'li',
+  events: {"click .updatedishbutton": "handleupdate"},
+  initialize: function() {
+    console.log("new dishview "+this.model.id);
+    // this.url = "dishes/"+this.model.id;
+    // console.log(this);
+  },
+  render: function() {
+    this.$el.html(dishtemplate({dish: this.model.toJSON()}));
+    return this;
+  },
+  handleupdate: function() {
+    console.log("update dish");
+    this.model.set({image_url:this.$el.find('input.imagebox').val(),
+      name:this.$el.find('input.namebox').val(),
+      price:this.$el.find('input.pricebox').val()
+    });
+    this.model.save();
+  }
+});
+
+var DishesView = Backbone.View.extend({
+  initialize: function() {
+    console.log("new dishesview");
+    this.listenToOnce(this.collection, "sync", this.render);
+  },
+  render: function() {
+    this.$el.html("");
+    console.log("dishesview render: "+this.collection.length);
+    this.collection.each( function(model) {
+      this.$el.append(new DishView({model: model}).render().$el);
+    }.bind(this));
+    return this;
+  }
+});
 
 var CategoryView = Backbone.View.extend({
   tagName: 'li',
@@ -11,10 +49,13 @@ var CategoryView = Backbone.View.extend({
     console.log("categoryview render");
     this.$el.html("");
     this.$el.append(categorytemplate({name: this.model.get('name')}));
+    
+    this.dishesview = new DishesView({el: this.$el.find('.disheslist').get(0), collection: this.model.dishes });
+    this.dishesview.render();
     return this;
   },
   handleupdate: function() {
-    console.log('update!');
+    console.log('update category');
     this.model.set({name: this.$el.find('input').val()});
     this.model.save();
   }
@@ -36,7 +77,7 @@ var CategoriesView = Backbone.View.extend({
     console.log("new categoriesview");
   },
   render: function() {
-    console.log("categoriesview render");
+    console.log("categoriesview render: "+this.collection.length);
     this.$ul.html("");
     this.collection.each( function(model) {
       this.$ul.append(new CategoryView({model: model}).render().$el);
