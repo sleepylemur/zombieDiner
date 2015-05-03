@@ -10,6 +10,7 @@ var DishView = Backbone.View.extend({
             "click .updatedishbutton": "handleupdate",
             "click .deletedishbutton": "handledelete"},
   initialize: function() {
+    Backbone.Validation.bind(this);
     console.log("new dishview "+this.model.id);
     this.$el.data('id',this.model.id);
     this.listenTo(this.model, "change", this.render);
@@ -19,11 +20,21 @@ var DishView = Backbone.View.extend({
     return this;
   },
   handleupdate: function() {
-    this.model.set({image_url:this.$el.find('input.imagebox').val(),
-      name:this.$el.find('input.namebox').val(),
-      price:this.$el.find('input.pricebox').val()
-    });
-    this.model.save();
+    var image = this.$el.find('input.imagebox').val();
+    var name = this.$el.find('input.namebox').val();
+    var price = this.$el.find('input.pricebox').val();
+    var err = this.model.preValidate({name:name, price:price});
+    this.$el.find('.errmsg').remove();
+    if (err) {
+      if (err.name) {this.$el.find('input.namebox').after($('<p>').html(err.name).addClass('errmsg'));}
+      if (err.price) {this.$el.find('input.pricebox').after($('<p>').html(err.price).addClass('errmsg'));}
+    } else {
+      this.model.set({image_url:image,
+        name:name,
+        price:price
+      });
+      this.model.save();
+    }
   },
   handledelete: function() {
     this.model.destroy();
@@ -62,13 +73,6 @@ var DishesView = Backbone.View.extend({
     return this;
   },
   handlesort: function(event,ui) {
-    // TODO: handle moving between categories
-    // console.log(this.rootcollection);
-    // console.log(this.collection);
-    // console.log(event);
-    // console.log(ui);
-    // console.log("cat id = " + this.$el.data('id'));
-    // console.log(ui.item.data('id'));
     if (ui.sender) {
       // if we received a dish from another category then move it to the appropriate collection
       var itemid = ui.item.data('id');
@@ -89,7 +93,6 @@ var DishesView = Backbone.View.extend({
           break;
         }
       }
-      // console.log("sender id = " + ui.sender.data('id'));
     }
 
     // loop through dom elements to get order and set corresponding model position to match

@@ -129,3 +129,10 @@ body {
   text-align:center;
   width: 100%;
 }
+
+p.errmsg {
+  padding: 0;
+  line-height:100%;
+  margin:-12px 0 12px 0;
+  color: red;
+}

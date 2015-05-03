@@ -1,4 +1,8 @@
 var Dish = Backbone.Model.extend({
+  validation: {
+    price: {min: 1},
+    name: {required: true}
+  },
   initialize:function() {
     console.log('dish created '+this.id);
     this.url = function() {
