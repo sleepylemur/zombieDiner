@@ -33,6 +33,15 @@ h2 {
 .displaydish, .editdish, .displaycategory, .editcategory {
   position: relative;
 }
+.dish {
+  position: relative;
+  display: inline-block;
+  width: 33%;
+/*  width: 200px;
+  margin: 0;*/
+}
+  .sortable { width: 450px; }
+  .sortable li { display: inline-block;}
 
 .centertext {
   text-align: center;

@@ -1,14 +1,22 @@
 var categorytemplate = _.template($('#categorytemplate').html());
 var dishtemplate = _.template($('#dishtemplate').html());
 
+$(function() {
+  $( ".sortable" ).sortable();
+  $( ".sortable" ).disableSelection();
+});
+
+
 var DishView = Backbone.View.extend({
-  tagName: 'div',
+  tagName: 'li',
+  className: 'dish ui-state-default',
   events: { "click .editdishbutton": "handleedit",
             "click .revertdishbutton": "render",
             "click .updatedishbutton": "handleupdate",
             "click .deletedishbutton": "handledelete"},
   initialize: function() {
     console.log("new dishview "+this.model.id);
+    this.$el.data('id',this.model.id);
     this.listenTo(this.model, "change", this.render);
   },
   render: function() {
@@ -35,24 +43,39 @@ var DishesView = Backbone.View.extend({
   initialize: function() {
     console.log("new dishesview");
     this.listenToOnce(this.collection, "sync", function() {
-      // this.$li = this.$el.append($('<li>').addClass('row'));
       this.render();
       this.listenTo(this.collection, "add remove", this.render);
     });
+
+    // enable draggable sorting in this view
+    $(function() {
+      this.$el.sortable({update: this.handlesort.bind(this)});
+      this.$el.disableSelection();
+    }.bind(this));
   },
   render: function() {
     this.$el.html("");
     console.log("dishesview render: "+this.collection.length);
-    var i = 0;
-    var $li;
     this.collection.each( function(model) {
-      if (i++ % 2 === 0) {
-        $li = $('<li>').addClass('row');
-        this.$el.append($li);
-      }
-      $li.append(new DishView({model: model, className: "six columns"}).render().$el);
+      this.$el.append(new DishView({model: model}).render().$el);
     }.bind(this));
+
     return this;
+  },
+  handlesort: function(event,ui) {
+    // TODO: handle moving between categories
+
+    // loop through dom elements to get order and set corresponding model position to match
+    var $dishes = this.$el.find('.dish');
+    $dishes.each(function (dishid) {
+      var id = $dishes.eq(dishid).data('id');
+      for (var modelid = 0; modelid < this.collection.models.length; modelid++) {
+        if (this.collection.models[modelid].id === id) {
+          this.collection.models[modelid].set({position: dishid});
+          this.collection.models[modelid].save();
+        }
+      }
+    }.bind(this));
   }
 });
 

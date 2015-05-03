@@ -15,7 +15,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/categories', function(req, res){
-	db.all("SELECT * FROM categories", function(err, rows){
+	db.all("SELECT * FROM categories ORDER BY position", function(err, rows){
 		if(err){
 			throw err;
 		}
@@ -73,7 +73,7 @@ app.delete('/categories/:id', function(req, res){
 
 
 app.get('/dishes', function(req, res) {
-	db.all("SELECT * FROM dishes", function(err, rows) {
+	db.all("SELECT * FROM dishes ORDER BY position", function(err, rows) {
 		if(err) {
 			throw err;
 		}
@@ -82,7 +82,7 @@ app.get('/dishes', function(req, res) {
 });
 
 app.get('/categories/:id/dishes', function(req, res) {
-	db.all("SELECT * FROM dishes WHERE category_id = ?", req.params.id, function(err, rows) {
+	db.all("SELECT * FROM dishes WHERE category_id = ? ORDER BY position", req.params.id, function(err, rows) {
 		if (err) {
 			throw err;
 		}
@@ -101,7 +101,7 @@ app.get('/dishes/:id', function(req, res) {
 });
 
 app.post('/dishes', function(req, res) {
-	db.run("INSERT INTO dishes (name, price, image_url, category_id) VALUES (?,?,?,?)", req.body.name, req.body.price, req.body.image_url, req.body.category_id, function(err) {
+	db.run("INSERT INTO dishes (name, price, image_url, category_id, position) VALUES (?,?,?,?,?)", req.body.name, req.body.price, req.body.image_url, req.body.category_id, req.body.position, function(err) {
 		if(err) {
 			throw err;
 		}
@@ -117,7 +117,7 @@ app.post('/dishes', function(req, res) {
 
 app.put('/dishes/:id', function(req, res) {
 	var id = req.params.id;
-	db.run("UPDATE dishes SET name = ?, image_url = ?, price = ?, category_id = ? WHERE id = ?", req.body.name, req.body.image_url, req.body.price, req.body.category_id, id, function (err) {
+	db.run("UPDATE dishes SET name = ?, image_url = ?, price = ?, category_id = ?, position = ? WHERE id = ?", req.body.name, req.body.image_url, req.body.price, req.body.category_id, req.body.position, id, function (err) {
 		if(err) {
 			throw err;
 		}
