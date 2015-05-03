@@ -1,11 +1,6 @@
 var categorytemplate = _.template($('#categorytemplate').html());
 var dishtemplate = _.template($('#dishtemplate').html());
 
-$(function() {
-  $( ".sortable" ).sortable();
-  $( ".sortable" ).disableSelection();
-});
-
 
 var DishView = Backbone.View.extend({
   tagName: 'li',
@@ -49,30 +44,65 @@ var DishesView = Backbone.View.extend({
 
     // enable draggable sorting in this view
     $(function() {
-      this.$el.sortable({update: this.handlesort.bind(this)});
+      this.$el.sortable({
+        update: this.handlesort.bind(this),
+        connectWith: '.disheslist'
+      });
       this.$el.disableSelection();
     }.bind(this));
   },
   render: function() {
-    this.$el.html("");
-    console.log("dishesview render: "+this.collection.length);
-    this.collection.each( function(model) {
-      this.$el.append(new DishView({model: model}).render().$el);
-    }.bind(this));
-
+    if (arguments.length<3 || !arguments[2]['norender']) { // make sure we didn't get passed a norender flag
+      this.$el.html("");
+      console.log("dishesview render: "+this.collection.length);
+      this.collection.each( function(model) {
+        this.$el.append(new DishView({model: model}).render().$el);
+      }.bind(this));
+    }
     return this;
   },
   handlesort: function(event,ui) {
     // TODO: handle moving between categories
+    // console.log(this.rootcollection);
+    // console.log(this.collection);
+    // console.log(event);
+    // console.log(ui);
+    // console.log("cat id = " + this.$el.data('id'));
+    // console.log(ui.item.data('id'));
+    if (ui.sender) {
+      // if we received a dish from another category then move it to the appropriate collection
+      var itemid = ui.item.data('id');
+      var senderid = ui.sender.data('id');
+      for (var catid=0; catid<this.rootcollection.models.length; catid++) {
+        if (this.rootcollection.models[catid].id === senderid) {
+          // found matching sender category
+          var sendercat = this.rootcollection.models[catid];
+          for (var dishid=0; dishid<sendercat.dishes.models.length; dishid++) {
+            if (sendercat.dishes.models[dishid].id === itemid) {
+              // found matching sender dish so now move it to our new category
+              var dish = sendercat.dishes.models[dishid];
+              sendercat.dishes.remove(dish);
+              this.collection.add(dish, {'norender': true}); // pass in a norender flag so it doesn't render
+              break;
+            }
+          }
+          break;
+        }
+      }
+      // console.log("sender id = " + ui.sender.data('id'));
+    }
 
     // loop through dom elements to get order and set corresponding model position to match
     var $dishes = this.$el.find('.dish');
+    var catid = this.$el.data('id');
     $dishes.each(function (dishid) {
       var id = $dishes.eq(dishid).data('id');
       for (var modelid = 0; modelid < this.collection.models.length; modelid++) {
         if (this.collection.models[modelid].id === id) {
-          this.collection.models[modelid].set({position: dishid});
+          console.log("dishid: "+dishid+" modelid: "+id+" modelnum: "+modelid);
+          this.collection.models[modelid].set({position: dishid, category_id: catid});
           this.collection.models[modelid].save();
+          break;
         }
       }
     }.bind(this));
@@ -81,6 +111,7 @@ var DishesView = Backbone.View.extend({
 
 var CategoryView = Backbone.View.extend({
   tagName: 'li',
+  className: 'ui-state-default',
   events: {"click .updatebutton": "handleupdate",
             "click .editbutton": "handleedit",
             "click .revertbutton": "render",
@@ -88,6 +119,7 @@ var CategoryView = Backbone.View.extend({
             "click .deletebutton": "handledelete"},
   initialize: function() {
     console.log("new categoryview");
+    this.$el.data('id',this.model.id);
     this.listenTo(this.model, "change:name", this.render);
   },
   render: function() {
@@ -96,6 +128,8 @@ var CategoryView = Backbone.View.extend({
     this.$el.append(categorytemplate({name: this.model.get('name')}));
     
     this.dishesview = new DishesView({el: this.$el.find('.disheslist').get(0), collection: this.model.dishes });
+    this.dishesview.$el.data('id',this.model.id);
+    this.dishesview.rootcollection = this.rootcollection;
     this.dishesview.render();
     return this;
   },
@@ -129,20 +163,43 @@ var CategoriesView = Backbone.View.extend({
       this.render();
       // after the first update, re-render whenever a category is added or removed
       this.listenTo(this.collection, "add remove", this.render);
+
+      // enable draggable sorting of categories
     });
+
+
+    $(function() {
+      this.$el.find('#categorieslist').sortable({handle: '.displaycategory', update: this.handlesort.bind(this)});
+      this.$el.find('#categorieslist').disableSelection();
+    }.bind(this));
     console.log("new categoriesview");
   },
   render: function() {
     console.log("categoriesview render: "+this.collection.length);
     this.$ul.html("");
     this.collection.each( function(model) {
-      this.$ul.append(new CategoryView({model: model}).render().$el);
+      var newview = new CategoryView({model: model});
+      newview.rootcollection = this.collection;
+      this.$ul.append(newview.render().$el);
     }.bind(this));
     return this;
   },
   newcategory: function() {
     this.collection.create({name: 'untitled'});
     console.log('new');
+  },
+  handlesort: function() {
+    // loop through dom elements to get order and set corresponding model position to match
+    var $categories = this.$ul.find('> li');
+    $categories.each(function (catid) {
+      var id = $categories.eq(catid).data('id');
+      for (var modelid = 0; modelid < this.collection.models.length; modelid++) {
+        if (this.collection.models[modelid].id === id) {
+          this.collection.models[modelid].set({position: catid});
+          this.collection.models[modelid].save();
+        }
+      }
+    }.bind(this));
   }
 });
 

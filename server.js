@@ -49,7 +49,7 @@ app.post('/categories', function(req, res){
 
 app.put('/categories/:id', function(req, res){
 	var id = req.params.id
-	db.run("UPDATE categories SET name = ? WHERE id = ?", req.body.name, id, function(err){
+	db.run("UPDATE categories SET name = ?, position = ? WHERE id = ?", req.body.name, req.body.position, id, function(err){
 		if(err){
 			throw err;
 		}

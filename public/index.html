@@ -12,8 +12,7 @@
   <!-- FONT
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-
-  <!-- CSS
+  <link href='http://fonts.googleapis.com/css?family=Josefin+Sans|Josefin+Slab|Tangerine' rel='stylesheet' type='text/css'><!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
@@ -27,26 +26,12 @@
 
 </head>
 <body>
+  <div class="logocontainer">
+  <img class="logo" src="images/splashlogo.png">
+  </div>
 
-  <ul class="sortable twelve columns">
-    <li class="dish ui-state-default">1</li>
-    <li class="dish ui-state-default">2</li>
-    <li class="dish ui-state-default">3</li>
-    <li class="dish ui-state-default">4</li>
-    <li class="dish ui-state-default">5</li>
-    <li class="dish ui-state-default">6</li>
-    <li class="dish ui-state-default">7</li>
-    <li class="dish ui-state-default">8</li>
-    <li class="dish ui-state-default">9</li>
-    <li class="dish ui-state-default">10</li>
-    <li class="dish ui-state-default">11</li>
-    <li class="dish ui-state-default">12</li>
-  </ul>
-
-  <img src="images/LDlogo.png" width="110" height="60">
-
-  <div id="categories" class="container">
-    <ul id="categorieslist" class="row">
+  <div id="categories">
+    <ul id="categorieslist">
     </ul>
     <div class="centertext">
       <button id="newcategorybutton">add category</button>
@@ -55,39 +40,46 @@
 
 
   <script type="text/template" id="categorytemplate">
-    <div class="displaycategory twelve columns">
-      <h2>
+    <div class="displaycategory">
+      <h2 class="grey">
         <%= name %>
         <span class="topright">
         <img src="images/plusicon.svg" class="addbutton icon">
-        <img src="images/editicon.svg" class="editbutton icon">
+        <img src="images/pencil.png" class="editbutton icon">
         </span>
       </h2>
     </div>
-    <div class="editcategory twelve columns hidden">
+    <div class="editcategory hidden">
       <p><input type="text" value="<%= name %>"></p>
-      <p><button class="updatebutton">update</button>
-      <button class="revertbutton">revert</button>
-      <button class="deletebutton">delete</button></p>
+      <p><button class="updatebutton pink">update</button>
+      <button class="revertbutton pink">revert</button>
+      <button class="deletebutton pink">delete</button></p>
     </div>
-    <ul class="disheslist twelve columns">
+    <ul class="disheslist">
     </ul>
   </script>
 
   <script type="text/template" id="dishtemplate">
     <div class="displaydish">
-      <img src="<%= dish.image_url %>">
-      <%= dish.name %>
-      <%= dish.price %>
-      <img src="images/editicon.svg" class="editdishbutton smallicon topright">
+      <div class="dishimagecontainer">
+        <img class="dishimage" src="<%= dish.image_url %>">
+      </div>
+      <div class="dishtext">
+      <p class='cursive grey'><%= dish.name %></p>
+      <p class='cursive pink'><%= dish.price %></p>
+      </div>
+      <img src="images/pencil.png" class="editdishbutton smallicon topright">
     </div>
     <div class="editdish hidden">
-      <p><input type="text" class="imagebox" value="<%= dish.image_url %>"></p>
-      <p><input type="text" class="namebox" value="<%= dish.name %>"></p>
-      <p><input type="text" class="pricebox" value="<%= dish.price %>"></p>
-      <p><button class="updatedishbutton">update</button>
-      <button class="revertdishbutton">revert</button>
-      <button class="deletedishbutton">delete</button></p>
+      <p><label for"image">image</label></p>
+      <p><input name="image" type="text" class="imagebox" value="<%= dish.image_url %>"></p>
+      <p><label for"name">name</label></p>
+      <p><input name="name" type="text" class="namebox" value="<%= dish.name %>"></p>
+      <p><label for"price">price</label></p>
+      <p><input name="price" type="text" class="pricebox" value="<%= dish.price %>"></p>
+      <p><button class="updatedishbutton pink">update</button>
+      <button class="revertdishbutton pink">revert</button>
+      <button class="deletedishbutton pink">delete</button></p>
     </div>
   </script>
 
