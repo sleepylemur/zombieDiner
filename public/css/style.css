@@ -1,0 +1,39 @@
+ul {
+  list-style-type: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.topright {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.smallicon {
+  width:25px;
+  height:25px;
+}
+
+.icon {
+  width:30px;
+  height:30px;
+}
+
+h2 {
+  /*display: inline-block;*/
+  position: relative;
+  text-align: center;
+  border-bottom: solid 1px black;
+  margin-top: 1em;
+}
+
+.displaydish, .editdish, .displaycategory, .editcategory {
+  position: relative;
+}
+
+.centertext {
+  text-align: center;
+}

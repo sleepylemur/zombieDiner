@@ -1,6 +1,9 @@
 var Dish = Backbone.Model.extend({
   initialize:function() {
-    console.log('dish created');
+    console.log('dish created '+this.id);
+    this.url = function() {
+      return this.id ? 'dishes/'+this.id : 'dishes';
+    }
   }
 });
 
@@ -15,8 +18,15 @@ var Category = Backbone.Model.extend({
   initialize:function() {
     this.dishes = new Dishes();
     this.dishes.url = "categories/"+this.id+"/dishes";
-    console.log(this.dishes);
     this.dishes.fetch();
     console.log('category created');
+  }
+});
+
+var Categories = Backbone.Collection.extend({
+  model: Category,
+  url: "categories",
+  initialize:function() {
+    console.log('new categories');
   }
 });
