@@ -1,3 +1,18 @@
+window.onclick = function(e) {
+  console.log('clicked!');
+  console.log('target ' + e.target);
+  console.log('targethtml ' + e.target.innerHTML);
+  console.log('src ' + e.target.src);
+  // console.log('bubbles: '+e.bubbles);
+  // e.target.click();
+  console.log('['+e.screenX+","+ e.screenY+']');
+}
+
+$('#testbutton1').on('click', function(){alert('1 clicked');});
+$('#testbutton').on('click', function(){alert('2 clicked');});
+$('#testbutton2').on('click', function(){alert('3 clicked');});
+
+
 var categorytemplate = _.template($('#categorytemplate').html());
 var dishtemplate = _.template($('#dishtemplate').html());
 
@@ -11,7 +26,7 @@ var DishView = Backbone.View.extend({
             "click .deletedishbutton": "handledelete"},
   initialize: function() {
     Backbone.Validation.bind(this);
-    console.log("new dishview "+this.model.id);
+    // console.log("new dishview "+this.model.id);
     this.$el.data('id',this.model.id);
     this.listenTo(this.model, "change", this.render);
   },
@@ -47,7 +62,7 @@ var DishView = Backbone.View.extend({
 
 var DishesView = Backbone.View.extend({
   initialize: function() {
-    console.log("new dishesview");
+    // console.log("new dishesview");
     this.listenToOnce(this.collection, "sync", function() {
       this.render();
       this.listenTo(this.collection, "add remove", this.render);
@@ -65,7 +80,7 @@ var DishesView = Backbone.View.extend({
   render: function() {
     if (arguments.length<3 || !arguments[2]['norender']) { // make sure we didn't get passed a norender flag
       this.$el.html("");
-      console.log("dishesview render: "+this.collection.length);
+      // console.log("dishesview render: "+this.collection.length);
       this.collection.each( function(model) {
         this.$el.append(new DishView({model: model}).render().$el);
       }.bind(this));
@@ -102,7 +117,7 @@ var DishesView = Backbone.View.extend({
       var id = $dishes.eq(dishid).data('id');
       for (var modelid = 0; modelid < this.collection.models.length; modelid++) {
         if (this.collection.models[modelid].id === id) {
-          console.log("dishid: "+dishid+" modelid: "+id+" modelnum: "+modelid);
+          // console.log("dishid: "+dishid+" modelid: "+id+" modelnum: "+modelid);
           this.collection.models[modelid].set({position: dishid, category_id: catid});
           this.collection.models[modelid].save();
           break;
@@ -121,14 +136,16 @@ var CategoryView = Backbone.View.extend({
             "click .addbutton": "handleadd",
             "click .deletebutton": "handledelete"},
   initialize: function() {
-    console.log("new categoryview");
+    // console.log("new categoryview");
     this.$el.data('id',this.model.id);
     this.listenTo(this.model, "change:name", this.render);
   },
   render: function() {
-    console.log("categoryview render");
+    // console.log("categoryview render");
     this.$el.html("");
     this.$el.append(categorytemplate({name: this.model.get('name')}));
+    console.log('catview'+this.model.id);
+    this.$el.find('.editbutton').on('click',function() {console.log('random test of click');});
     
     this.dishesview = new DishesView({el: this.$el.find('.disheslist').get(0), collection: this.model.dishes });
     this.dishesview.$el.data('id',this.model.id);
@@ -158,6 +175,7 @@ var CategoryView = Backbone.View.extend({
     this.model.destroy();
   },
   handleedit: function() {
+    console.log('edit clicked');
     this.$el.find('.editcategory').removeClass('hidden');
     this.$el.find('.displaycategory').addClass('hidden');
   }
@@ -180,14 +198,14 @@ var CategoriesView = Backbone.View.extend({
     });
 
 
-    $(function() {
-      this.$el.find('#categorieslist').sortable({handle: '.displaycategory', update: this.handlesort.bind(this)});
-      this.$el.find('#categorieslist').disableSelection();
-    }.bind(this));
-    console.log("new categoriesview");
+    // $(function() {
+    //   this.$el.find('#categorieslist').sortable({handle: '.displaycategory', update: this.handlesort.bind(this)});
+    //   this.$el.find('#categorieslist').disableSelection();
+    // }.bind(this));
+    // console.log("new categoriesview");
   },
   render: function() {
-    console.log("categoriesview render: "+this.collection.length);
+    // console.log("categoriesview render: "+this.collection.length);
     this.$ul.html("");
     this.collection.each( function(model) {
       var newview = new CategoryView({model: model});
@@ -198,7 +216,7 @@ var CategoriesView = Backbone.View.extend({
   },
   newcategory: function() {
     this.collection.create({name: 'untitled'});
-    console.log('new');
+    // console.log('new');
   },
   handlesort: function() {
     // loop through dom elements to get order and set corresponding model position to match

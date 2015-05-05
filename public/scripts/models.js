@@ -4,8 +4,8 @@ var Dish = Backbone.Model.extend({
     name: {required: true}
   },
   initialize:function() {
-    console.log('dish created '+this.id);
-    console.log(this.url);
+    // console.log('dish created '+this.id);
+    // console.log(this.url);
     this.url = function() {
       return this.id ? 'dishes/'+this.id : 'dishes';
     }
@@ -15,7 +15,7 @@ var Dish = Backbone.Model.extend({
 var Dishes = Backbone.Collection.extend({
   model: Dish,
   initialize:function() {
-    console.log('new dishes');
+    // console.log('new dishes');
   }
 });
 
@@ -27,7 +27,7 @@ var Category = Backbone.Model.extend({
     this.dishes = new Dishes();
     this.dishes.url = "categories/"+this.id+"/dishes";
     this.dishes.fetch();
-    console.log('category created');
+    // console.log('category created');
   }
 });
 
@@ -35,6 +35,6 @@ var Categories = Backbone.Collection.extend({
   model: Category,
   url: "categories",
   initialize:function() {
-    console.log('new categories');
+    // console.log('new categories');
   }
 });
