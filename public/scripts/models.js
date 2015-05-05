@@ -5,6 +5,7 @@ var Dish = Backbone.Model.extend({
   },
   initialize:function() {
     console.log('dish created '+this.id);
+    console.log(this.url);
     this.url = function() {
       return this.id ? 'dishes/'+this.id : 'dishes';
     }
@@ -19,6 +20,9 @@ var Dishes = Backbone.Collection.extend({
 });
 
 var Category = Backbone.Model.extend({
+  validation: {
+    name: {required: true}
+  },
   initialize:function() {
     this.dishes = new Dishes();
     this.dishes.url = "categories/"+this.id+"/dishes";

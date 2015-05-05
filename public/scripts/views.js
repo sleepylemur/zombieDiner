@@ -137,10 +137,19 @@ var CategoryView = Backbone.View.extend({
     return this;
   },
   handleupdate: function() {
-    this.$el.find('.displaycategory').removeClass('hidden');
-    this.$el.find('.editcategory').addClass('hidden');
-    this.model.set({name: this.$el.find('input').val()});
-    this.model.save();
+    var name = this.$el.find('input').val();
+    var err = this.model.preValidate({name:name});
+    this.$el.find('.errmsg').remove();
+    if (err) {
+      // validation failed so show errmsg
+      if (err.name) {this.$el.find('input').after($('<p>').html(err.name).addClass('errmsg'));}
+    } else {
+      // validation passed
+      this.$el.find('.displaycategory').removeClass('hidden');
+      this.$el.find('.editcategory').addClass('hidden');
+      this.model.set({name: name});
+      this.model.save();
+    }
   },
   handleadd: function() {
     this.model.dishes.create({image_url:"http://lorempixel.com/100/100", name:"new dish", price:"1.00", category_id: this.model.id});
