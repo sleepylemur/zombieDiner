@@ -1,18 +1,3 @@
-window.onclick = function(e) {
-  console.log('clicked!');
-  console.log('target ' + e.target);
-  console.log('targethtml ' + e.target.innerHTML);
-  console.log('src ' + e.target.src);
-  // console.log('bubbles: '+e.bubbles);
-  // e.target.click();
-  console.log('['+e.screenX+","+ e.screenY+']');
-}
-
-$('#testbutton1').on('click', function(){alert('1 clicked');});
-$('#testbutton').on('click', function(){alert('2 clicked');});
-$('#testbutton2').on('click', function(){alert('3 clicked');});
-
-
 var categorytemplate = _.template($('#categorytemplate').html());
 var dishtemplate = _.template($('#dishtemplate').html());
 
@@ -71,6 +56,7 @@ var DishesView = Backbone.View.extend({
     // enable draggable sorting in this view
     $(function() {
       this.$el.sortable({
+        handle: '.dishhandle',
         update: this.handlesort.bind(this),
         connectWith: '.disheslist'
       });
@@ -198,10 +184,13 @@ var CategoriesView = Backbone.View.extend({
     });
 
 
-    // $(function() {
-    //   this.$el.find('#categorieslist').sortable({handle: '.displaycategory', update: this.handlesort.bind(this)});
-    //   this.$el.find('#categorieslist').disableSelection();
-    // }.bind(this));
+    $(function() {
+      this.$el.find('#categorieslist').sortable({
+        handle: '.cathandle',
+        update: this.handlesort.bind(this)
+      });
+      this.$el.find('#categorieslist').disableSelection();
+    }.bind(this));
     // console.log("new categoriesview");
   },
   render: function() {

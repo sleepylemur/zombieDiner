@@ -27,10 +27,6 @@
 </head>
 <body>
 
-  <img id="testbutton1" src="images/pencil.png" class="icon">
-  <button id="testbutton" class="icon"></button>
-  <button id="testbutton2"><img src="images/pencil.png" class="icon"></button>
-
   <div class="logocontainer">
   <img class="logo" src="images/splashlogo.png">
   </div>
@@ -47,6 +43,7 @@
   <script type="text/template" id="categorytemplate">
     <div class="displaycategory">
       <h2 class="grey">
+        <div class='cathandle'></div>
         <%= name %>
         <span class="topright">
         <img src="images/plusicon.svg" class="addbutton icon">
@@ -66,6 +63,7 @@
 
   <script type="text/template" id="dishtemplate">
     <div class="displaydish">
+      <div class="dishhandle"></div>
       <div class="dishimagecontainer">
         <img class="dishimage" src="<%= dish.image_url %>">
       </div>
