@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.12.3",
-    "chai": "^2.3.0",
     "cors": "^2.6.0",
     "express": "^4.12.3",
     "sqlite3": "^3.0.5"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0"
   }
 }

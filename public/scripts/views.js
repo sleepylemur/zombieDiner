@@ -123,6 +123,7 @@ var CategoryView = Backbone.View.extend({
             "click .deletebutton": "handledelete"},
   initialize: function() {
     // console.log("new categoryview");
+    Backbone.Validation.bind(this);
     this.$el.data('id',this.model.id);
     this.listenTo(this.model, "change:name", this.render);
   },
@@ -130,8 +131,6 @@ var CategoryView = Backbone.View.extend({
     // console.log("categoryview render");
     this.$el.html("");
     this.$el.append(categorytemplate({name: this.model.get('name')}));
-    console.log('catview'+this.model.id);
-    this.$el.find('.editbutton').on('click',function() {console.log('random test of click');});
     
     this.dishesview = new DishesView({el: this.$el.find('.disheslist').get(0), collection: this.model.dishes });
     this.dishesview.$el.data('id',this.model.id);
@@ -155,13 +154,25 @@ var CategoryView = Backbone.View.extend({
     }
   },
   handleadd: function() {
-    this.model.dishes.create({image_url:"http://lorempixel.com/100/100", name:"new dish", price:"1.00", category_id: this.model.id});
+    var newdish = new Dish({
+      image_url:"http://lorempixel.com/100/100",
+      name:"new dish",
+      price:"1.00",
+      category_id: this.model.id}
+    );
+    newdish.save(null,{success: function() {
+      this.model.dishes.add(
+        newdish,
+        {at: 0}
+      );
+    }.bind(this)});
+    // this.model.dishes.models[0].save();
+    // console.log(this.model.dishes);
   },
   handledelete: function() {
     this.model.destroy();
   },
   handleedit: function() {
-    console.log('edit clicked');
     this.$el.find('.editcategory').removeClass('hidden');
     this.$el.find('.displaycategory').addClass('hidden');
   }

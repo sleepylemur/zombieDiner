@@ -2,6 +2,7 @@
 
 ####project for [general assembly](http://generalassemb.ly)'s web developer intensive
 
+### [zombieDiner](http://evangriffiths.nyc:3002) hosted on digital ocean
 
 ## User Spec
 
@@ -22,3 +23,5 @@ validation:
 - dish.name is not empty
 
 - dish.price is a number
+
+- category.name is not empty
