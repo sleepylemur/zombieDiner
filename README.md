@@ -1,8 +1,8 @@
-#zombieDiner
+#[zombieDiner](http://evangriffiths.nyc:3201/)
 
 ####project for [general assembly](http://generalassemb.ly)'s web developer intensive
 
-### [zombieDiner](http://evangriffiths.nyc:3002) hosted on digital ocean
+####  hosted on digital ocean
 
 ## User Spec
 
